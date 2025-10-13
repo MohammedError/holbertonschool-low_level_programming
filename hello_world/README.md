@@ -1,1 +1,1 @@
-This repository contains the 0-preprocessor exercise for Holberton School.
+This repository contains compiler exercises for Holberton School.
