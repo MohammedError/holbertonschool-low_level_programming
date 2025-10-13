@@ -1,2 +1,5 @@
 #!/bin/bash
-gcc -E $CFILE -o c
+# 0-preprocessor
+# Run C file through the preprocessor and save output to file c
+
+gcc -E "$CFILE" -o c
