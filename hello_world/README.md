@@ -1,1 +1,1 @@
-This repository contains compiler exercises for Holberton School.
+This repository contains all hello_world exercises for Holberton School.
