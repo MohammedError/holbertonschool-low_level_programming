@@ -14,6 +14,7 @@ char *_strdup(char *str)
 	char *dup_str;
 	unsigned int i, len;
 
+	/* Force new commit */
 	if (str == NULL)
 		return (NULL);
 
