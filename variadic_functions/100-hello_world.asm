@@ -3,9 +3,9 @@ section .data
     msg_len equ $ - hello_msg   ; Calculate length of the message
 
 section .text
-    global _start
+    global main                 ; Use 'main' for gcc linking, not '_start'
 
-_start:
+main:
     ; syscall write(int fd, const void *buf, size_t count)
     mov rax, 1                  ; 1 = syscall number for write
     mov rdi, 1                  ; 1 = file descriptor for stdout
@@ -13,7 +13,6 @@ _start:
     mov rdx, msg_len            ; rdx = length of the message
     syscall                     ; Call the kernel
 
-    ; syscall exit(int status)
-    mov rax, 60                 ; 60 = syscall number for exit
-    mov rdi, 0                  ; 0 = exit status (success)
-    syscall                     ; Call the kernel
+    ; No need to call exit (rax 60)
+    ; GCC's C-runtime will handle that when main returns.
+    ret
