@@ -11,36 +11,44 @@
  */
 int main(int argc, char *argv[])
 {
-	int i, sum = 0, diff, q, r;
+	int i = 0, sum = 0, n;
+	char password[100];
 
 	if (argc != 2)
 		return (1);
 
-	/* Calculate sum of username characters */
-	for (i = 0; argv[1][i]; i++)
-		sum += argv[1][i];
+	for (n = 0; argv[1][n]; n++)
+		sum += argv[1][n];
 
-	/* The target checksum for crackme5 is 2772 (0xAD4) */
-	diff = 2772 - sum;
-
-	/* * We divide the difference by 80 ('P') to generate base characters.
-	 * We adjust if the remainder is not a printable character (< 33).
-	 */
-	q = diff / 80;
-	r = diff % 80;
-
-	while (r < 33 && q > 0)
+	/* Target sum is 2772. Use only safe chars ('z' = 122) to fill */
+	while (sum < 2772 - 122)
 	{
-		r += 80;
-		q--;
+		password[i++] = 122;
+		sum += 122;
 	}
 
-	/* Print the base characters */
-	for (i = 0; i < q; i++)
-		putchar(80);
+	/* Calculate the last needed value */
+	n = 2772 - sum;
 
-	/* Print the remainder */
-	putchar(r);
+	/* * If the remainder 'n' is not a safe alphanumeric char,
+	 * reduce the previous char (which is 'z') to make 'n' safe.
+	 * Safe ranges: 48-57 (0-9), 65-90 (A-Z), 97-122 (a-z)
+	 */
+	while ((n < 48) || (n > 57 && n < 65) || (n > 90 && n < 97))
+	{
+		if (i > 0) /* Backtrack to previous 'z' */
+		{
+			password[--i] -= 1; /* Reduce 'z' to 'y' etc */
+			sum -= 1;
+		}
+		n = 2772 - sum; /* Re-calculate remainder */
+		i++; /* Move index back */
+	}
+
+	password[i++] = n;
+	password[i] = '\0';
+
+	printf("%s", password);
 
 	return (0);
 }
