@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <string.h>
 
 /**
- * main - Generates a key for the crackme5 executable.
+ * main - Generates a valid key for the crackme5 executable.
  * @argc: The number of arguments supplied to the program.
  * @argv: An array of pointers to the arguments.
  *
@@ -11,34 +11,36 @@
  */
 int main(int argc, char *argv[])
 {
-	char password[100];
-	int i, sum, n;
+	int i, sum = 0, diff, q, r;
 
 	if (argc != 2)
-	{
-		printf("Usage: ./keygen5 username\n");
 		return (1);
-	}
 
-	srand(time(NULL));
-	sum = 0;
+	/* Calculate sum of username characters */
 	for (i = 0; argv[1][i]; i++)
 		sum += argv[1][i];
 
-	i = 0;
-	while (sum < 2772 - 122)
+	/* The target checksum for crackme5 is 2772 (0xAD4) */
+	diff = 2772 - sum;
+
+	/* * We divide the difference by 80 ('P') to generate base characters.
+	 * We adjust if the remainder is not a printable character (< 33).
+	 */
+	q = diff / 80;
+	r = diff % 80;
+
+	while (r < 33 && q > 0)
 	{
-		n = (rand() % (122 - 97 + 1)) + 97;
-		password[i] = n;
-		sum += n;
-		i++;
+		r += 80;
+		q--;
 	}
 
-	n = 2772 - sum;
-	password[i] = n;
-	password[i + 1] = '\0';
+	/* Print the base characters */
+	for (i = 0; i < q; i++)
+		putchar(80);
 
-	printf("%s", password);
+	/* Print the remainder */
+	putchar(r);
 
 	return (0);
 }
