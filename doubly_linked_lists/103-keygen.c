@@ -3,52 +3,65 @@
 #include <string.h>
 
 /**
- * main - Generates a valid key for the crackme5 executable.
- * @argc: The number of arguments supplied to the program.
- * @argv: An array of pointers to the arguments.
+ * main - Generates valid key for crackme5
+ * @argc: number of arguments
+ * @argv: arguments
  *
- * Return: Always 0.
+ * Return: 0 on success, 1 on error
  */
 int main(int argc, char *argv[])
 {
-	int i = 0, sum = 0, n;
-	char password[100];
+	int i, len;
+	char *l = "A-CHRDw87lNS0E9B2TibgpnMVys5XzvtOGJcYLU+4mjW6fxqZeF3Qa1rPhdKIouk";
+	char key[7];
+	int tmp;
 
 	if (argc != 2)
 		return (1);
 
-	for (n = 0; argv[1][n]; n++)
-		sum += argv[1][n];
+	len = strlen(argv[1]);
 
-	/* Target sum is 2772. Use only safe chars ('z' = 122) to fill */
-	while (sum < 2772 - 122)
-	{
-		password[i++] = 122;
-		sum += 122;
-	}
+	/* Key char 1: Length based */
+	tmp = (len ^ 59) & 63;
+	key[0] = l[tmp];
 
-	/* Calculate the last needed value */
-	n = 2772 - sum;
+	/* Key char 2: Sum of chars */
+	tmp = 0;
+	for (i = 0; i < len; i++)
+		tmp += argv[1][i];
+	tmp = (tmp ^ 79) & 63;
+	key[1] = l[tmp];
 
-	/* * If the remainder 'n' is not a safe alphanumeric char,
-	 * reduce the previous char (which is 'z') to make 'n' safe.
-	 * Safe ranges: 48-57 (0-9), 65-90 (A-Z), 97-122 (a-z)
-	 */
-	while ((n < 48) || (n > 57 && n < 65) || (n > 90 && n < 97))
-	{
-		if (i > 0) /* Backtrack to previous 'z' */
-		{
-			password[--i] -= 1; /* Reduce 'z' to 'y' etc */
-			sum -= 1;
-		}
-		n = 2772 - sum; /* Re-calculate remainder */
-		i++; /* Move index back */
-	}
+	/* Key char 3: Product of chars */
+	tmp = 1;
+	for (i = 0; i < len; i++)
+		tmp *= argv[1][i];
+	tmp = (tmp ^ 85) & 63;
+	key[2] = l[tmp];
 
-	password[i++] = n;
-	password[i] = '\0';
+	/* Key char 4: Max char based */
+	tmp = 0;
+	for (i = 0; i < len; i++)
+		if (argv[1][i] > tmp)
+			tmp = argv[1][i];
+	srand(tmp ^ 14);
+	tmp = rand() & 63;
+	key[3] = l[tmp];
 
-	printf("%s", password);
+	/* Key char 5: Sum of squares */
+	tmp = 0;
+	for (i = 0; i < len; i++)
+		tmp += (argv[1][i] * argv[1][i]);
+	tmp = (tmp ^ 239) & 63;
+	key[4] = l[tmp];
 
+	/* Key char 6: Random loop based on first char */
+	for (i = 0; i < argv[1][0]; i++)
+		rand();
+	tmp = rand() & 63;
+	key[5] = l[tmp];
+
+	key[6] = '\0';
+	printf("%s", key);
 	return (0);
 }
