@@ -21,25 +21,25 @@ int main(int argc, char *argv[])
 
 	len = strlen(argv[1]);
 
-	/* Key char 1: Length based */
+	/* Key char 1 */
 	tmp = (len ^ 59) & 63;
 	key[0] = l[tmp];
 
-	/* Key char 2: Sum of chars */
+	/* Key char 2 */
 	tmp = 0;
 	for (i = 0; i < len; i++)
 		tmp += argv[1][i];
 	tmp = (tmp ^ 79) & 63;
 	key[1] = l[tmp];
 
-	/* Key char 3: Product of chars */
+	/* Key char 3 */
 	tmp = 1;
 	for (i = 0; i < len; i++)
 		tmp *= argv[1][i];
 	tmp = (tmp ^ 85) & 63;
 	key[2] = l[tmp];
 
-	/* Key char 4: Max char based */
+	/* Key char 4 */
 	tmp = 0;
 	for (i = 0; i < len; i++)
 		if (argv[1][i] > tmp)
@@ -48,14 +48,14 @@ int main(int argc, char *argv[])
 	tmp = rand() & 63;
 	key[3] = l[tmp];
 
-	/* Key char 5: Sum of squares */
+	/* Key char 5 */
 	tmp = 0;
 	for (i = 0; i < len; i++)
 		tmp += (argv[1][i] * argv[1][i]);
 	tmp = (tmp ^ 239) & 63;
 	key[4] = l[tmp];
 
-	/* Key char 6: Random loop based on first char */
+	/* Key char 6 */
 	for (i = 0; i < argv[1][0]; i++)
 		rand();
 	tmp = rand() & 63;
